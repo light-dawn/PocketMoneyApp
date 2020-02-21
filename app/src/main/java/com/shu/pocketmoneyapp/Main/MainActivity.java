@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    private Button btnDate;
     private TextView tvYear;
     private TextView tvMonth;
+    String year;
+    String month;
     Calendar calendar = Calendar.getInstance(Locale.CHINA);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,26 +61,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     */
     public static void showDatePickerDialog(Activity activity, int themeResId, final TextView tvY,
                                             final TextView tvM, Calendar calendar) {
-        new DatePickerDialog(activity, themeResId, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(activity, themeResId, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 tvY.setText(year + "年");
                 tvM.setText((month + 1) + "月");
             }
         },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//        String date = String.format("%d年%d月", year, monthOfYear+1);
-//        btnDate.setText(date);
+                // java的切片语法：str.substring(start, end);
+                Integer.parseInt(tvY.getText().toString().substring(0, 4)),
+                Integer.parseInt(tvM.getText().toString().substring(0, 2))-1,
+                1);
+        dialog.show();
+        dialog.setTitle(R.string.dateDialogTitle);
+        DatePicker dp = dialog.getDatePicker(); // 获取dialog的内部组件
+        // 隐藏掉日期，只保留年和月
+        ((ViewGroup) ((ViewGroup) dp.getChildAt(0)).getChildAt(0))
+                .getChildAt(1).setVisibility(View.GONE);
     }
 
-    // defaultDateSet方法为显示年月的控件初始化了值
+
+    // defaultDateSet方法为显示年月的控件初始化值
+    // 其实用Calendar也能实现当前日期获取
     public void defaultDateSet() {
         String[] dateArray = TimeUtils.getCurYMD();
-        tvYear.setText(String.format(getString(R.string.year), dateArray[0]));
-        tvMonth.setText(String.format(getString(R.string.month), dateArray[1]));
+        year = dateArray[0];
+        month = dateArray[1];
+        tvYear.setText(String.format(getString(R.string.year), year));
+        tvMonth.setText(String.format(getString(R.string.month), month));
     }
 }

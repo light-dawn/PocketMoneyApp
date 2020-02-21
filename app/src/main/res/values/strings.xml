@@ -4,4 +4,5 @@
     <string name="cost">支出</string>
     <string name="year">%1$s年</string>
     <string name="month">%1$s月</string>
+    <string name="dateDialogTitle">请选择月份</string>
 </resources>
